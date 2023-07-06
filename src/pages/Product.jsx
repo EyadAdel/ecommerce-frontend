@@ -220,7 +220,7 @@ const Product = () => {
               <SizeContainer>
                 <FilterTitle>Size</FilterTitle>
                 <Select onChange={(e) => setSize(e.target.value)}>
-                  <Option disabled>Select</Option>
+                  <Option disabled selected >Select</Option>
                   {product.size?.map((s) => (
                     <Option key={s}>{s}</Option>
                   ))}
