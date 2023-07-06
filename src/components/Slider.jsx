@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { sliderItems } from "../data";
 import { useState } from "react";
 import { mobile } from "../responsive";
@@ -26,8 +26,6 @@ const Arrow = styled.div`
   top: 0;
   bottom: 0;
   margin: auto;
-  left: ${(props) => props.direction === "left" && "10px"};
-  right: ${(props) => props.direction === "right" && "10px"};
   opacity: 0.5;
   cursor: pointer;
   z-index: 2;
@@ -95,8 +93,12 @@ const Slider = () => {
 
   return (
     <Container>
-      <Arrow direction={"left"} onClick={() => handleClick("left")}>
-        <ArrowBackIosIcon />
+      <Arrow
+        style={{ left: "10px" }}
+        direction={"left"}
+        onClick={() => handleClick("left")}
+      >
+        <ChevronLeftIcon />
       </Arrow>
       <Wrapper slideindex={slideIndex}>
         {sliderItems.map((item) => (
@@ -112,8 +114,12 @@ const Slider = () => {
           </Slide>
         ))}
       </Wrapper>
-      <Arrow direction={"right"} onClick={() => handleClick("right")}>
-        <ArrowForwardIosIcon />
+      <Arrow
+        style={{ right: "10px" }}
+        direction={"right"}
+        onClick={() => handleClick("right")}
+      >
+        <ChevronRightIcon />
       </Arrow>
     </Container>
   );

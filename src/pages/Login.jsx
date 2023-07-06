@@ -2,7 +2,10 @@ import { styled } from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { newRequest } from "../requestMethods";
+import axios from "axios";
+import Spinner from "../components/Spinner";
+import { useDispatch } from "react-redux";
+import { loginStart } from "../redux/userSlice.js";
 
 const Container = styled.div`
   width: 100vw;
@@ -76,46 +79,58 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [spinner, setSpinner] = useState(false);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
   const handleClick = async (e) => {
+    setSpinner(true);
     e.preventDefault();
     try {
-      const res = await newRequest.post("/auth/login", { email, password });
+      const res = await axios.post(
+        "https://ecommerce-backend-7cyp.onrender.com/api/auth/login",
+        { email, password }
+      );
+      dispatch(loginStart());
       localStorage.setItem("currentUser", JSON.stringify(res.data));
       navigate("/");
     } catch (err) {
       setError(err.response.data);
+      setSpinner(false);
       console.log(error);
     }
   };
 
   return (
     <Container>
-      <Wrapper>
-        <Title>Sign In</Title>
-        <Form>
-          <Input
-            placeholder="email"
-            type="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <Input
-            placeholder="password"
-            type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          <Button onClick={handleClick}>Log In</Button>
-          {error && <Error>Wrong Email or Password!</Error>}
-          <Link>Forgotten password?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
-        </Form>
-      </Wrapper>
+      {spinner ? (
+        <Spinner />
+      ) : (
+        <Wrapper>
+          <Title>Sign In</Title>
+          <Form>
+            <Input
+              placeholder="email"
+              type="email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+            <Input
+              placeholder="password"
+              type="password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+            <Button onClick={handleClick}>Log In</Button>
+            {error && <Error>Wrong Email or Password!</Error>}
+            <Link>Forgotten password?</Link>
+            <Link>CREATE A NEW ACCOUNT</Link>
+          </Form>
+        </Wrapper>
+      )}
     </Container>
   );
 };

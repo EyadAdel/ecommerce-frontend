@@ -5,9 +5,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StoreIcon from "@mui/icons-material/Store";
 import Badge from "@mui/material/Badge";
 import { mobile } from "../responsive";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { newRequest } from "../requestMethods";
+import axios from "axios";
+import { logout } from "../redux/userSlice.js";
 
 const Container = styled.div`
   max-height: 70px;
@@ -32,7 +33,7 @@ const Logo = styled.h1`
   font-weight: bold;
   z-index: 2;
   font-family: Lobster;
-  ${mobile({ fontSize: "24px" })}
+  ${mobile({ fontSize: "24px", display: "flex" })}
 `;
 
 const Center = styled.div`
@@ -105,10 +106,13 @@ const Navbar = () => {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
-      await newRequest.post("/auth/logout");
+      await axios.post(
+        "https://ecommerce-backend-7cyp.onrender.com/api/auth/logout"
+      );
+      dispatch(logout());
       localStorage.setItem("currentUser", null);
       navigate("/");
     } catch (err) {

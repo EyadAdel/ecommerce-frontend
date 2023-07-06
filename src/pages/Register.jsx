@@ -1,8 +1,9 @@
 import { styled } from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
-import { newRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Spinner from "../components/Spinner";
 
 const Container = styled.div`
   width: 100vw;
@@ -64,6 +65,8 @@ const Register = () => {
     password: "",
   });
 
+  const [spinner, setSpinner] = useState(false);
+
   const handleChange = (e) => {
     setUser((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
@@ -72,54 +75,65 @@ const Register = () => {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setSpinner(true);
     try {
-      await newRequest.post("/auth/register", { ...user });
+      await axios.post(
+        "https://ecommerce-backend-7cyp.onrender.com/api/auth/register",
+        { ...user }
+      );
       try {
-        const res = await newRequest.post("/auth/login", {
-          email: user.email,
-          password: user.password,
-        });
+        const res = await axios.post(
+          "https://ecommerce-backend-7cyp.onrender.com/api/auth/login",
+          {
+            email: user.email,
+            password: user.password,
+          }
+        );
         localStorage.setItem("currentUser", JSON.stringify(res.data));
         navigate("/");
       } catch (err) {}
     } catch (err) {
       console.log(err);
+      setSpinner(false);
     }
   };
 
   return (
     <Container>
-      <Wrapper>
-        <Title>CREATE AN ACCOUNT</Title>
-        <Form onSubmit={handleSubmit}>
-          <Input
-            required
-            placeholder="name"
-            name="username"
-            onChange={handleChange}
-          />
-          <Input
-            required
-            placeholder="email"
-            type="email"
-            name="email"
-            onChange={handleChange}
-          />
-          <Input
-            required
-            placeholder="password"
-            type="password"
-            name="password"
-            onChange={handleChange}
-          />
-          <Agreement>
-            By creating an account. I consent to the processing of my personal
-            data in accordance with the <strong>PRIVACY POLICY</strong>
-          </Agreement>
-          <Button>CREATE</Button>
-        </Form>
-      </Wrapper>
+      {spinner ? (
+        <Spinner />
+      ) : (
+        <Wrapper>
+          <Title>CREATE AN ACCOUNT</Title>
+          <Form onSubmit={handleSubmit}>
+            <Input
+              required
+              placeholder="name"
+              name="username"
+              onChange={handleChange}
+            />
+            <Input
+              required
+              placeholder="email"
+              type="email"
+              name="email"
+              onChange={handleChange}
+            />
+            <Input
+              required
+              placeholder="password"
+              type="password"
+              name="password"
+              onChange={handleChange}
+            />
+            <Agreement>
+              By creating an account. I consent to the processing of my personal
+              data in accordance with the <strong>PRIVACY POLICY</strong>
+            </Agreement>
+            <Button>CREATE</Button>
+          </Form>
+        </Wrapper>
+      )}
     </Container>
   );
 };

@@ -25,22 +25,36 @@ const cartSlice = createSlice({
         existProduct.total += newProduct.quantity * newProduct.price;
         state.total += action.payload.price;
       }
+      console.log(state.products);
     },
 
     removeItemFromCart(state, action) {
-      const newProduct = action.payload;
+      const deletedProduct = action.payload;
+      // const existProduct = state.products.find(
+      //   (product) =>
+      //     product._id === deletedProduct._id &&
+      //     product.color === deletedProduct.color &&
+      //     product.size === deletedProduct.size
+      // );
+
       const existProduct = state.products.find(
-        (product) => product._id === newProduct._id
+        (product) =>
+          product._id === deletedProduct._id &&
+          product.color === deletedProduct.color &&
+          product.size === deletedProduct.size
       );
 
       if (existProduct.quantity === 1) {
-        state.total -= action.payload.price;
+        state.total -= existProduct.price;
         state.quantity -= 1;
         state.products = state.products.filter(
-          (item) => item._id !== existProduct._id
+          (product) =>
+            product._id !== existProduct._id ||
+            product.color !== existProduct.color ||
+            product.size !== existProduct.size
         );
       } else {
-        state.total -= action.payload.price;
+        state.total -= existProduct.price;
         existProduct.quantity -= 1;
       }
     },

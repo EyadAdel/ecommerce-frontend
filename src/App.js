@@ -1,10 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { Fragment } from "react";
-import {
-  RouterProvider,
-  createBrowserRouter,
-  Redirect,
-} from "react-router-dom"; // make us define our routs
+import { RouterProvider, createBrowserRouter } from "react-router-dom"; // make us define our routs
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import Product from "./pages/Product";
@@ -15,8 +9,7 @@ import Success from "./pages/Success";
 import { useSelector } from "react-redux";
 
 function App() {
-  let user = useSelector((state) => state.user.currentUser);
-  console.log(user);
+  let { isUser } = useSelector((state) => state.user);
   const router = createBrowserRouter([
     {
       path: "/",
@@ -40,7 +33,7 @@ function App() {
     },
     {
       path: "/login",
-      element: user ? <Home /> : <Login />,
+      element: isUser ? <Home /> : <Login />,
     },
     {
       path: "/register",
