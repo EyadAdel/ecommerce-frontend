@@ -94,7 +94,8 @@ const Login = () => {
       );
       dispatch(loginStart());
       localStorage.setItem("currentUser", JSON.stringify(res.data));
-      navigate("/");
+      // navigate("/");
+      window.history.back();
     } catch (err) {
       setError(err.response.data);
       setSpinner(false);
@@ -127,7 +128,13 @@ const Login = () => {
             <Button onClick={handleClick}>Log In</Button>
             {error && <Error>Wrong Email or Password!</Error>}
             <Link>Forgotten password?</Link>
-            <Link>CREATE A NEW ACCOUNT</Link>
+            <Link
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              CREATE A NEW ACCOUNT
+            </Link>
           </Form>
         </Wrapper>
       )}
