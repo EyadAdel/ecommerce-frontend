@@ -9,7 +9,7 @@ import StripeCheckout from "react-stripe-checkout";
 import { useEffect, useState } from "react";
 import { addItemToCart, removeItemFromCart } from "../redux/cartSlice";
 import { userRequest } from "../requestMethods";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const KEY = process.env.REACT_APP_STRIPE;
 
@@ -167,6 +167,8 @@ const Cart = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { isUser } = useSelector((state) => state.user);
   const cart = useSelector((state) => state.cart);
   const [stripeToken, setStripeToken] = useState(null);
   const dispatch = useDispatch();
@@ -269,18 +271,28 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {Math.round(cart.total)}</SummaryItemPrice>
             </SummaryItem>
-            <StripeCheckout
-              name="Eyad Shop"
-              image="https://res.cloudinary.com/dsfjtwsiz/image/upload/v1688321376/logo_eivlc3.png"
-              billingAddress
-              shippingAddress
-              description={`Your total is $${cart.total}`}
-              amount={cart.total * 100}
-              token={onToken}
-              stripeKey={KEY}
-            >
-              <Button>CHECKOUT NOW</Button>
-            </StripeCheckout>
+            {isUser ? (
+              <StripeCheckout
+                name="Eyad Shop"
+                image="https://res.cloudinary.com/dsfjtwsiz/image/upload/v1688321376/logo_eivlc3.png"
+                billingAddress
+                shippingAddress
+                description={`Your total is $${cart.total}`}
+                amount={cart.total * 100}
+                token={onToken}
+                stripeKey={KEY}
+              >
+                <Button>CHECKOUT NOW</Button>
+              </StripeCheckout>
+            ) : (
+              <Button
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                CHECKOUT NOW
+              </Button>
+            )}
           </Summary>
         </Bottom>
       </Wrapper>
